@@ -1,9 +1,10 @@
 import json
 import folium
+import requests
 import streamlit as st
 import geopandas as gpd
 
-DATA_PATH = r"C:\Users\project\geojson.json"
+DATA_URL = "https://rolzy-blog-assets.s3.ap-southeast-2.amazonaws.com/geojson.json"
 DATE_COLUMN = "utc_date"
 
 # Create title
@@ -34,8 +35,12 @@ st.markdown("""
 
 @st.cache_data
 def load_data():
-    with open(DATA_PATH) as geofile:
-       j_file = json.load(geofile)
+    # Download the file
+    response = requests.get(DATA_URL)
+    response.raise_for_status()  # Raise an exception for bad responses
+    
+    # Parse the JSON content
+    j_file = response.json()
 
     # Convert GeoJSON to GeoDataFrame
     map_df = gpd.GeoDataFrame.from_features(j_file["features"])
