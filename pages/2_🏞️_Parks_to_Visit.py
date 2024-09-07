@@ -1,4 +1,3 @@
-import json
 import folium
 import requests
 import streamlit as st
@@ -47,6 +46,7 @@ def load_data():
 
     return j_file, map_df
 
+
 # Create a text element and let the reader know the data is loading.
 data_load_state = st.empty()
 data_load_state.text('Loading data...')
@@ -85,7 +85,7 @@ for idx, row in map_df.iterrows():
         park_centers[park_name] = center
     else:
         # If we already have a center for this park, compare distances to the park's overall centroid
-        park_centroid = map_df[map_df['NAME'] == park_name].geometry.unary_union.centroid
+        park_centroid = map_df[map_df['NAME'] == park_name].geometry.union_all().centroid
         if center.distance(park_centroid) < park_centers[park_name].distance(park_centroid):
             park_centers[park_name] = center
 
